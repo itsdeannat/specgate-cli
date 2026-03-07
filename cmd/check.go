@@ -77,25 +77,14 @@ status code, allowing it to be used as a quality gate in CI.`,
 			fmt.Println()
 		}
 
-		hasErrors := len(result.OperationSummaryViolations) > 0 ||
-			len(result.SuccessResponseViolations) > 0 ||
-			len(result.ErrorResponseViolations) > 0 ||
-			(strict && len(result.OperationDescriptionViolations) > 0) ||
-			result.MissingServers ||
-			len(result.ServerPlaceholderViolations) > 0
-
 		display.PrintResults(result, strict)
-
-		if hasErrors {
-			os.Exit(1)
-		}
 
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(checkCmd)
-	checkCmd.Flags().BoolVar(&strict, "strict", false, "Treat warnings as blocking issues")
+	checkCmd.Flags().BoolVar(&strict, "strict", false, "Treat warnings as errors")
 
 	// Here you will define your flags and configuration settings.
 
