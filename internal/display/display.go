@@ -8,18 +8,7 @@ import (
 
 func PrintResults(result *validate.CheckResult, strict bool) {
 
-	hasWarnings := len(result.OperationDescriptionViolations) > 0
-
-	hasErrors := len(result.OperationSummaryViolations) > 0 ||
-		len(result.SuccessResponseViolations) > 0 ||
-		len(result.ErrorResponseViolations) > 0 ||
-		len(result.SuccessResponseDescriptionViolations) > 0 ||
-		len(result.ErrorResponseDescriptionViolations) > 0 ||
-		result.MissingServers == true ||
-		len(result.ServerPlaceholderViolations) > 0 ||
-		(strict && hasWarnings)
-
-	if hasErrors {
+	if result.HasErrors() {
 		fmt.Println("ERRORS")
 		fmt.Println("------")
 		fmt.Println()
@@ -30,7 +19,7 @@ func PrintResults(result *validate.CheckResult, strict bool) {
 		fmt.Println()
 	}
 
-	if !strict && hasWarnings {
+		if !strict && result.HasWarnings() {
 		fmt.Println("WARNINGS")
 		fmt.Println("--------")
 		fmt.Println()
@@ -40,11 +29,11 @@ func PrintResults(result *validate.CheckResult, strict bool) {
 		fmt.Println()
 	}
 
-	if !hasErrors && !hasWarnings {
+	if !result.HasErrors() && !result.HasWarnings() {
 		fmt.Println("✅ Spec is ready.")
 	}
 
-	if hasErrors {
+	if result.HasErrors() {
 		os.Exit(1)
 	}
 }
@@ -97,7 +86,9 @@ func printErrors(result *validate.CheckResult, strict bool) {
 	}
 
 	if result.MissingServers {
-		fmt.Println("No servers defined - add a server URL to your spec")
+		fmt.Println("No servers defined: ")
+		fmt.Println()
+		fmt.Println("- Add a server URL and description to your spec.")
 		fmt.Println()
 	}
 

@@ -6,15 +6,16 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"encoding/json"
 	"specgate/internal/validate"
 	"specgate/internal/display"
+	"specgate/internal/report"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
 )
 
 var strict bool
-var output bool
-var format string
+var outputFormat string
 
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
@@ -77,7 +78,22 @@ status code, allowing it to be used as a quality gate in CI.`,
 			fmt.Println()
 		}
 
-		display.PrintResults(result, strict)
+		if outputFormat != "" && outputFormat != "json" {
+			fmt.Fprintf(os.Stderr, "specgate: unsupported format %q\n", outputFormat)
+			os.Exit(2)
+		}
+
+		if outputFormat == "json" {
+			jsonOutput := format.ToJsonFormat(result, strict)
+			jsonBytes, err := json.MarshalIndent(jsonOutput, "", "  ")
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "specgate: failed to marshal JSON output: %v\n", err)
+				os.Exit(2)
+			}
+			fmt.Println(string(jsonBytes))
+		} else {
+			display.PrintResults(result, strict)
+		}
 
 	},
 }
@@ -85,6 +101,7 @@ status code, allowing it to be used as a quality gate in CI.`,
 func init() {
 	rootCmd.AddCommand(checkCmd)
 	checkCmd.Flags().BoolVar(&strict, "strict", false, "Treat warnings as errors")
+	checkCmd.Flags().StringVar(&outputFormat, "format", "", "Output results as json")
 
 	// Here you will define your flags and configuration settings.
 

@@ -17,6 +17,19 @@ type CheckResult struct {
 	MissingServers                       bool
 }
 
+func (result *CheckResult) HasErrors() bool {
+    return len(result.OperationSummaryViolations) > 0 ||
+        len(result.SuccessResponseViolations) > 0 ||
+        len(result.ErrorResponseViolations) > 0 ||
+        len(result.SuccessResponseDescriptionViolations) > 0 ||
+        len(result.ErrorResponseDescriptionViolations) > 0 ||
+        result.MissingServers ||
+        len(result.ServerPlaceholderViolations) > 0
+}
+
+func (result *CheckResult) HasWarnings() bool {
+    return len(result.OperationDescriptionViolations) > 0
+}
 
 func CheckServer(server *openapi3.Server, result *CheckResult) {
 
