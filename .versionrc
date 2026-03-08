@@ -1,0 +1,13 @@
+{
+  "types": [
+    { "type": "feat", "section": "Added" },
+    { "type": "fix", "section": "Fixed" },
+    { "type": "refactor", "section": "Changed", "hidden": false },
+    { "type": "perf", "section": "Changed", "hidden": false },
+    { "type": "remove", "section": "Removed" },
+    { "type": "docs", "section": "Documentation", "hidden": false },
+    { "type": "chore", "section": "Internal", "hidden": true },
+    { "type": "test", "section": "Tests", "hidden": true },
+    { "type": "wip", "section": "WIP", "hidden": true }
+  ]
+}

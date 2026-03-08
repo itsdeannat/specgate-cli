@@ -1,0 +1,330 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Brew & Co Coffee API",
+    "description": "A RESTful API for managing a coffee shop's menu, orders, and loyalty program.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Brew & Co Support",
+      "email": "api@brewandco.coffee"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.brewandco.coffee/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging.api.brewandco.coffee/v1",
+      "description": "Staging server"
+    }
+  ],
+  "tags": [
+    { "name": "menu", "description": "Browse and manage the coffee menu" },
+    { "name": "orders", "description": "Place and track orders" },
+    { "name": "loyalty", "description": "Manage customer loyalty points" }
+  ],
+  "paths": {
+    "/menu": {
+      "get": {
+        "tags": ["menu"],
+        "summary": "List all menu items",
+        "description": "Returns the full list of available coffee drinks and food items, optionally filtered by category.",
+        "operationId": "listMenuItems",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter items by category (e.g. espresso, cold-brew, pastry).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["espresso", "cold-brew", "tea", "pastry", "merchandise"]
+            }
+          },
+          {
+            "name": "available",
+            "in": "query",
+            "description": "When true, only returns items currently in stock.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of menu items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MenuItem" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["menu"],
+        "summary": "Add a new menu item",
+        "description": "Creates a new item on the coffee shop menu. Requires admin privileges.",
+        "operationId": "createMenuItem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MenuItemInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Menu item successfully created.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MenuItem" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data."
+          }
+        }
+      }
+    },
+    "/menu/{itemId}": {
+      "get": {
+        "tags": ["menu"],
+        "operationId": "getMenuItem",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the requested menu item.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MenuItem" }
+              }
+            }
+          },
+          "404": {
+            "description": "Menu item not found."
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "tags": ["orders"],
+        "summary": "Place a new order",
+        "description": "Submits a new coffee order for a customer. Returns the order with an estimated pick-up time.",
+        "operationId": "placeOrder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/OrderInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order successfully placed.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{orderId}": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "Get order status",
+        "description": "Retrieves the current status and details of a specific order by its ID.",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order details.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found."
+          }
+        }
+      }
+    },
+    "/loyalty/{customerId}": {
+      "get": {
+        "tags": ["loyalty"],
+        "summary": "Get loyalty points balance",
+        "operationId": "getLoyaltyBalance",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer loyalty account details.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoyaltyAccount" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["loyalty"],
+        "summary": "Redeem loyalty points",
+        "operationId": "redeemPoints",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "points": {
+                    "type": "integer",
+                    "description": "Number of points to redeem."
+                  }
+                },
+                "required": ["points"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Points successfully redeemed.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoyaltyAccount" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MenuItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "example": "Oat Milk Latte" },
+          "description": { "type": "string", "example": "Smooth espresso with steamed oat milk and a hint of vanilla." },
+          "category": { "type": "string", "example": "espresso" },
+          "price": { "type": "number", "format": "float", "example": 5.50 },
+          "available": { "type": "boolean", "example": true },
+          "calories": { "type": "integer", "example": 180 }
+        }
+      },
+      "MenuItemInput": {
+        "type": "object",
+        "required": ["name", "category", "price"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "calories": { "type": "integer" }
+        }
+      },
+      "OrderInput": {
+        "type": "object",
+        "required": ["customerId", "items"],
+        "properties": {
+          "customerId": { "type": "string", "format": "uuid" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "menuItemId": { "type": "string", "format": "uuid" },
+                "quantity": { "type": "integer", "minimum": 1 },
+                "customizations": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "example": ["extra shot", "oat milk", "no sugar"]
+                }
+              }
+            }
+          },
+          "pickupTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "customerId": { "type": "string", "format": "uuid" },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "brewing", "ready", "collected", "cancelled"]
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderInput/properties/items/items" }
+          },
+          "total": { "type": "number", "format": "float" },
+          "estimatedPickupTime": { "type": "string", "format": "date-time" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "LoyaltyAccount": {
+        "type": "object",
+        "properties": {
+          "customerId": { "type": "string", "format": "uuid" },
+          "pointsBalance": { "type": "integer", "example": 340 },
+          "tier": {
+            "type": "string",
+            "enum": ["bean", "roast", "barista", "master"],
+            "example": "roast"
+          },
+          "lifetimePoints": { "type": "integer", "example": 1280 }
+        }
+      }
+    }
+  }
+}
