@@ -1,8 +1,9 @@
-package format
+package report
 
 import (
 	"specgate/internal/validate"
 )
+
 type JsonFormat struct {
     Ready bool `json:"ready"`
 	Strict bool `json:"strict"`

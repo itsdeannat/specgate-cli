@@ -2,7 +2,7 @@ package validate
 
 import (
 	"strings"
-
+	"fmt"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -87,4 +87,27 @@ func CheckOperation(op *openapi3.Operation, path string, result *CheckResult) {
 	} else if !hasErrorWithDescription {
 		result.ErrorResponseDescriptionViolations = append(result.ErrorResponseDescriptionViolations, path)
 	}
+}
+
+func CheckPaths (doc *openapi3.T, result *CheckResult) {
+	for path, pathItem := range doc.Paths.Map() {
+			if pathItem == nil {
+				continue
+			}
+			if pathItem.Get != nil {
+				CheckOperation(pathItem.Get, fmt.Sprintf("GET %s", path), result)
+			}
+			if pathItem.Post != nil {
+				CheckOperation(pathItem.Post, fmt.Sprintf("POST %s", path), result)
+			}
+			if pathItem.Put != nil {
+				CheckOperation(pathItem.Put, fmt.Sprintf("PUT %s", path), result)
+			}
+			if pathItem.Patch != nil {
+				CheckOperation(pathItem.Patch, fmt.Sprintf("PATCH %s", path), result)
+			}
+			if pathItem.Delete != nil {
+				CheckOperation(pathItem.Delete, fmt.Sprintf("DELETE %s", path), result)
+			}
+		}
 }

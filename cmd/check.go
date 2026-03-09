@@ -84,7 +84,7 @@ status code, allowing it to be used as a quality gate in CI.`,
 		}
 
 		if outputFormat == "json" {
-			jsonOutput := format.ToJsonFormat(result, strict)
+			jsonOutput := report.ToJsonFormat(result, strict)
 			jsonBytes, err := json.MarshalIndent(jsonOutput, "", "  ")
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "specgate: failed to marshal JSON output: %v\n", err)
