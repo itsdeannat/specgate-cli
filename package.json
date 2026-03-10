@@ -4,7 +4,7 @@
   "description": "A command-line tool for enforcing specification readiness",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release": "standard-version"
   },
   "author": "Deanna Thompson",
   "license": "MIT",
