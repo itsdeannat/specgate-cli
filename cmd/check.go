@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"os"
 	"encoding/json"
-	"specgate/internal/validate"
-	"specgate/internal/display"
-	"specgate/internal/report"
+	"github.com/itsdeannat/specgate/internal/validate"
+	"github.com/itsdeannat/specgate/internal/display"
+	"github.com/itsdeannat/specgate/internal/report"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
 )

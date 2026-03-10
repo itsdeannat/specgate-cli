@@ -9,9 +9,9 @@ import (
 	"os"
 	"encoding/json"
 	"github.com/spf13/cobra"
-	"specgate/internal/validate"
-	"specgate/internal/report"
-	"specgate/internal/llm"
+	"github.com/itsdeannat/specgate/internal/validate"
+	"github.com/itsdeannat/specgate/internal/report"
+	"github.com/itsdeannat/specgate/internal/llm"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 

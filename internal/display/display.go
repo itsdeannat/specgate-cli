@@ -3,7 +3,7 @@ package display
 import (
 	"fmt"
 	"os"
-	"specgate/internal/validate"
+	"github.com/itsdeannat/specgate/internal/validate"
 )
 
 func PrintResults(result *validate.CheckResult, strict bool) {
