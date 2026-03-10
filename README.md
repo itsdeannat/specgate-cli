@@ -87,7 +87,7 @@ SpecGate enforces the following rules. Run `specgate rules` to view them at any 
 | Missing error response | Operations must include at least one error response (4xx, 5xx, or default) |
 | Missing 2xx response description | Success responses must include a description |
 | Missing error response description | Error responses must include a description |
-| Missing servers object | The spec must define a servers object |
+| Missing servers object | A `servers` object must be included |
 | Placeholder server URL | Server URLs must not contain `example.com` or `localhost` |
 
 ### Warnings

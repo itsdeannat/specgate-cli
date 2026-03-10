@@ -28,7 +28,7 @@ Warning rules are reported but do not fail the check unless --strict is enabled.
 		fmt.Println("- Success responses must include descriptions")
 		fmt.Println("- Error responses must include descriptions")
 		fmt.Println("- Server URLs must be present and cannot contain placeholders like 'example.com' or 'localhost'")
-		fmt.Println(("- The spec must define a servers object with at least one valid server URL"))
+		fmt.Println(("- A servers object must be included"))
 		fmt.Println()
 
 		fmt.Println("WARNINGS")
