@@ -15,6 +15,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "specgate",
+	Version: "0.1.0",
 	Short: "Enforce OpenAPI specification readiness",
 	Long: `specgate validates whether an OpenAPI specification is ready for
 documentation, SDK generation, or downstream use.
