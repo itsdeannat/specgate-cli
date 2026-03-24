@@ -34,6 +34,8 @@ Warning rules are reported but do not fail the check unless --strict is enabled.
 		fmt.Println("WARNINGS")
 		fmt.Println("--------")
 		fmt.Println("- Operations should include a description")
+		fmt.Println("- Operations should have an operationId")
+		fmt.Println("- Operations should have a meaningful tag")
 		fmt.Println()
 
 		fmt.Println("STRICT MODE") 
