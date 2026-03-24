@@ -102,6 +102,15 @@ func printErrors(result *validate.CheckResult, strict bool) {
 		fmt.Println()
 	}
 
+	if len(result.ParamDescriptionViolations) > 0 {
+		fmt.Printf("Missing descriptions for %d parameter(s):\n", len(result.ParamDescriptionViolations))
+		fmt.Println()
+		for _, item := range result.ParamDescriptionViolations {
+			fmt.Println("-", item)
+		}
+		fmt.Println()
+	}
+
 	if strict && hasWarnings(result) {
 		printWarnings(result)
 	}
