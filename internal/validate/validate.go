@@ -1,8 +1,9 @@
 package validate
 
 import (
-	"strings"
 	"fmt"
+	"strings"
+
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -14,30 +15,40 @@ type CheckResult struct {
 	ErrorResponseViolations              []string
 	ErrorResponseDescriptionViolations   []string
 	ServerPlaceholderViolations          []string
-	OperationIdViolations				 []string
-	OperationTagViolations				 []string
+	OperationIdViolations                []string
+	OperationTagViolations               []string
+	ParamDescriptionViolations           []string
 	MissingServers                       bool
 }
 
 func (result *CheckResult) HasErrors() bool {
-    return len(result.OperationSummaryViolations) > 0 ||
-        len(result.SuccessResponseViolations) > 0 ||
-        len(result.ErrorResponseViolations) > 0 ||
-        len(result.SuccessResponseDescriptionViolations) > 0 ||
-        len(result.ErrorResponseDescriptionViolations) > 0 ||
-        result.MissingServers ||
-        len(result.ServerPlaceholderViolations) > 0
+	return len(result.OperationSummaryViolations) > 0 ||
+		len(result.SuccessResponseViolations) > 0 ||
+		len(result.ErrorResponseViolations) > 0 ||
+		len(result.SuccessResponseDescriptionViolations) > 0 ||
+		len(result.ErrorResponseDescriptionViolations) > 0 ||
+		result.MissingServers ||
+		len(result.ServerPlaceholderViolations) > 0
 }
 
 func (result *CheckResult) HasWarnings() bool {
-    return len(result.OperationDescriptionViolations) > 0
+	return len(result.OperationDescriptionViolations) > 0
 }
 
 func CheckServer(server *openapi3.Server, result *CheckResult) {
 
-    if strings.Contains(server.URL, "example.com") || strings.Contains(server.URL, "localhost") {
-        result.ServerPlaceholderViolations = append(result.ServerPlaceholderViolations, server.URL)
-    }
+	if strings.Contains(server.URL, "example.com") || strings.Contains(server.URL, "localhost") {
+		result.ServerPlaceholderViolations = append(result.ServerPlaceholderViolations, server.URL)
+	}
+}
+
+func checkParam(param *openapi3.Parameter, path string, result *CheckResult) {
+	if param == nil {
+		return
+	}
+	if strings.TrimSpace(param.Description) == "" {
+		result.ParamDescriptionViolations = append(result.ParamDescriptionViolations, path)
+	}
 }
 
 func CheckOperation(op *openapi3.Operation, path string, result *CheckResult) {
@@ -95,27 +106,38 @@ func CheckOperation(op *openapi3.Operation, path string, result *CheckResult) {
 	} else if !hasErrorWithDescription {
 		result.ErrorResponseDescriptionViolations = append(result.ErrorResponseDescriptionViolations, path)
 	}
+
+	for _, paramItem := range op.Parameters {
+        if paramItem == nil || paramItem.Value == nil {
+            continue
+        }
+        if paramItem.Value.In == "path" {
+            checkParam(paramItem.Value, path, result)
+        } else {
+            checkParam(paramItem.Value, fmt.Sprintf("%s > query: %s", path, paramItem.Value.Name), result)
+        }
+	}
 }
 
-func CheckPaths (doc *openapi3.T, result *CheckResult) {
+func CheckPaths(doc *openapi3.T, result *CheckResult) {
 	for path, pathItem := range doc.Paths.Map() {
-			if pathItem == nil {
-				continue
-			}
-			if pathItem.Get != nil {
-				CheckOperation(pathItem.Get, fmt.Sprintf("GET %s", path), result)
-			}
-			if pathItem.Post != nil {
-				CheckOperation(pathItem.Post, fmt.Sprintf("POST %s", path), result)
-			}
-			if pathItem.Put != nil {
-				CheckOperation(pathItem.Put, fmt.Sprintf("PUT %s", path), result)
-			}
-			if pathItem.Patch != nil {
-				CheckOperation(pathItem.Patch, fmt.Sprintf("PATCH %s", path), result)
-			}
-			if pathItem.Delete != nil {
-				CheckOperation(pathItem.Delete, fmt.Sprintf("DELETE %s", path), result)
-			}
+		if pathItem == nil {
+			continue
 		}
+		if pathItem.Get != nil {
+			CheckOperation(pathItem.Get, fmt.Sprintf("GET %s", path), result)
+		}
+		if pathItem.Post != nil {
+			CheckOperation(pathItem.Post, fmt.Sprintf("POST %s", path), result)
+		}
+		if pathItem.Put != nil {
+			CheckOperation(pathItem.Put, fmt.Sprintf("PUT %s", path), result)
+		}
+		if pathItem.Patch != nil {
+			CheckOperation(pathItem.Patch, fmt.Sprintf("PATCH %s", path), result)
+		}
+		if pathItem.Delete != nil {
+			CheckOperation(pathItem.Delete, fmt.Sprintf("DELETE %s", path), result)
+		}
+	}
 }
