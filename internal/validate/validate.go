@@ -35,11 +35,13 @@ func (result *CheckResult) HasWarnings() bool {
 	return len(result.OperationDescriptionViolations) > 0
 }
 
-func CheckServer(server *openapi3.Server, result *CheckResult) {
+func CheckServer(server *openapi3.Server, result *CheckResult, blockList []string) {
 
-	if strings.Contains(server.URL, "example.com") || strings.Contains(server.URL, "localhost") {
-		result.ServerPlaceholderViolations = append(result.ServerPlaceholderViolations, server.URL)
-	}
+	for _, url := range blockList {
+		if server.URL == url {
+			result.ServerPlaceholderViolations = append(result.ServerPlaceholderViolations, server.URL)
+			}
+		}
 }
 
 func checkParam(param *openapi3.Parameter, path string, result *CheckResult) {
