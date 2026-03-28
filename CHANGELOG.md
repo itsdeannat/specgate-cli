@@ -2,7 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## 0.2.0 (2026-03-28)
+## [0.3.0](https://github.com/itsdeannat/specgate-cli/compare/v0.2.0...v0.3.0) (2026-03-28)
+
+
+### Added
+
+* add ability for check to access config and check server blocklist ([af9c298](https://github.com/itsdeannat/specgate-cli/commit/af9c2986e623469d3f5b88bfb4675561456ae275))
+* add ability to check config blocklist for servers ([7cc1e6d](https://github.com/itsdeannat/specgate-cli/commit/7cc1e6dabac98f8802bdd6c8cb86887d55b42318))
+* add config function and struct ([ddddf87](https://github.com/itsdeannat/specgate-cli/commit/ddddf872c6c2c74bc4bed9e7b434839cca00c8f8))
+* add new command for creating a new config file ([b1c81c9](https://github.com/itsdeannat/specgate-cli/commit/b1c81c9d4261e1c6862db85345919c36726a8c4b))
+
+
+### Changed
+
+* improve messaging for specgate config ([bea5314](https://github.com/itsdeannat/specgate-cli/commit/bea531470b0ca2a4a07a9ea43244322c7039283d))
+
+## 0.2.0 (2026-03-25)
 
 
 ### Added
