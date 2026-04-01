@@ -32,7 +32,9 @@ func (result *CheckResult) HasErrors() bool {
 }
 
 func (result *CheckResult) HasWarnings() bool {
-	return len(result.OperationDescriptionViolations) > 0
+	return len(result.OperationDescriptionViolations) > 0 ||
+		len(result.OperationIdViolations) > 0 ||
+		len(result.OperationTagViolations) > 0 
 }
 
 func CheckServer(server *openapi3.Server, result *CheckResult, blockList []string) {
