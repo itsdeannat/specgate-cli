@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"specgate/internal/config"
+	"specgate/internal/settings"
 
 	"github.com/spf13/cobra"
 )
@@ -28,7 +28,7 @@ This file defines validation rules and quality gates used by SpecGate commands.`
 			return
 		}
 
-		config.CreateConfig()
+		settings.CreateConfig()
 
 		if force {
 			fmt.Println("Config file overwritten.")

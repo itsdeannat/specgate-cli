@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"specgate/internal/config"
 	"specgate/internal/display"
 	"specgate/internal/report"
+	"specgate/internal/settings"
 	"specgate/internal/validate"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -51,13 +51,13 @@ status code, allowing it to be used as a quality gate in CI.`,
 			fmt.Println("Loaded config from .specgate.yaml")
 		} else {
 			fmt.Println("No SpecGate config found in project root. Created .specgate.yaml")
-			config.CreateConfig()
+			settings.CreateConfig()
 			fmt.Println("Edit the config, then rerun:\n specgate check")
 			os.Exit(3)
 		}
 
 		configFile, err := os.ReadFile("./.specgate.yaml")
-		var config config.RulesConfig
+		var config settings.SpecGateConfig
 		err = yaml.Unmarshal(configFile, &config)
 
 		result := &validate.CheckResult{}
@@ -88,7 +88,7 @@ status code, allowing it to be used as a quality gate in CI.`,
 		}
 
 		for _, server := range doc.Servers {
-			validate.CheckServer(server, result, config.Rules.ServerBlockList)
+			validate.CheckServer(server, result, config.ServerBlockList)
 		}
 
 		if strict && outputFormat == "" {
