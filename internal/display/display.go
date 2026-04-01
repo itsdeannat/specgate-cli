@@ -94,7 +94,7 @@ func printErrors(result *validate.CheckResult, strict bool) {
 	}
 
 	if len(result.ServerPlaceholderViolations) > 0 {
-		fmt.Printf("Server URL(s) contain placeholders:\n")
+		fmt.Printf("Server URL(s) contain placeholders or non-production URLs:\n")
 		fmt.Println()
 		for _, item := range result.ServerPlaceholderViolations {
 			fmt.Println("-", item)
