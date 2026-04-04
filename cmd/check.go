@@ -49,6 +49,7 @@ status code, allowing it to be used as a quality gate in CI.`,
 
 		if configErr == nil {
 			fmt.Println("Loaded config from .specgate.yaml")
+			fmt.Println()
 		} else {
 			fmt.Println("No SpecGate config found in project root. Created .specgate.yaml")
 			settings.CreateConfig()
@@ -110,7 +111,7 @@ status code, allowing it to be used as a quality gate in CI.`,
 			}
 			fmt.Println(string(jsonBytes))
 		} else {
-			display.PrintResults(result, strict)
+			display.PrintResults(file, result, strict)
 		}
 
 		if result.HasErrors() || (strict && result.HasWarnings()) {
