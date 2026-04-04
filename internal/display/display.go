@@ -3,32 +3,33 @@ package display
 import (
 	"fmt"
 	"os"
-
 	"specgate/internal/validate"
+	"text/tabwriter"
+	"github.com/fatih/color"
 )
 
-func PrintResults(result *validate.CheckResult, strict bool) {
+var W *tabwriter.Writer = tabwriter.NewWriter(os.Stdout, 10, 0, 3, ' ', 0)
+
+func PrintResults(file string, result *validate.CheckResult, strict bool) {
+
+	fmt.Printf("%s - %d errors, %d warnings\n", file, validate.CountErrors(result), validate.CountWarnings(result))
+	fmt.Println()
 
 	if result.HasErrors() {
-		fmt.Println("ERRORS")
-		fmt.Println("------")
-		fmt.Println()
 		printErrors(result, strict)
-		fmt.Println()
 	} else {
 		fmt.Println("✅ No errors found.")
 		fmt.Println()
 	}
 
 	if !strict && result.HasWarnings() {
-		fmt.Println("WARNINGS")
-		fmt.Println("--------")
-		fmt.Println()
 		printWarnings(result)
+		W.Flush()
 		fmt.Println()
 		fmt.Println("Run with --strict to treat warnings as errors.")
 		fmt.Println()
 	}
+
 
 	if !result.HasErrors() && !result.HasWarnings() {
 		fmt.Println("✅ Spec is ready.")
@@ -42,55 +43,37 @@ func PrintResults(result *validate.CheckResult, strict bool) {
 func printErrors(result *validate.CheckResult, strict bool) {
 
 	if len(result.OperationSummaryViolations) > 0 {
-		fmt.Printf("Missing operation summaries for %d operation(s):\n", len(result.OperationSummaryViolations))
-		fmt.Println()
 		for _, item := range result.OperationSummaryViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing operation summary\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if len(result.SuccessResponseViolations) > 0 {
-		fmt.Printf("Missing success responses (2xx) for %d operation(s):\n", len(result.SuccessResponseViolations))
-		fmt.Println()
 		for _, item := range result.SuccessResponseViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing success responses (2xx)\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if len(result.ErrorResponseViolations) > 0 {
-		fmt.Printf("Missing error responses (4xx/5xx/default) for %d operation(s):\n", len(result.ErrorResponseViolations))
-		fmt.Println()
 		for _, item := range result.ErrorResponseViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing error responses (4xx/5xx/default)\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if len(result.SuccessResponseDescriptionViolations) > 0 {
-		fmt.Printf("Missing descriptions for success responses (2xx) in %d operation(s):\n", len(result.SuccessResponseDescriptionViolations))
-		fmt.Println()
 		for _, item := range result.SuccessResponseDescriptionViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing descriptions for success responses (2xx)\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if len(result.ErrorResponseDescriptionViolations) > 0 {
-		fmt.Printf("Missing descriptions for error responses (4xx/5xx/default) in %d operation(s):\n", len(result.ErrorResponseDescriptionViolations))
-		fmt.Println()
 		for _, item := range result.ErrorResponseDescriptionViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing descriptions for error responses (4xx/5xx/default)\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if result.MissingServers {
-		fmt.Println("No servers defined: ")
-		fmt.Println()
-		fmt.Println("- Add a server URL and description to your spec.")
-		fmt.Println()
+		fmt.Fprintf(W, "%sNo servers defined\t\n", color.RedString("error\t"))
 	}
 
 	if len(result.ServerPlaceholderViolations) > 0 {
@@ -103,12 +86,9 @@ func printErrors(result *validate.CheckResult, strict bool) {
 	}
 
 	if len(result.ParamDescriptionViolations) > 0 {
-		fmt.Printf("Missing descriptions for %d parameter(s):\n", len(result.ParamDescriptionViolations))
-		fmt.Println()
 		for _, item := range result.ParamDescriptionViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing parameter description\t%s\n", color.RedString("error\t"), item)
 		}
-		fmt.Println()
 	}
 
 	if strict && hasWarnings(result) {
@@ -118,31 +98,25 @@ func printErrors(result *validate.CheckResult, strict bool) {
 
 func printWarnings(result *validate.CheckResult) {
 	if len(result.OperationDescriptionViolations) > 0 {
-		fmt.Printf("Missing operation descriptions for %d operation(s):\n", len(result.OperationDescriptionViolations))
-		fmt.Println()
 		for _, item := range result.OperationDescriptionViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing operation description\t%s\n", color.YellowString("warning\t"), item)
 		}
-		fmt.Println()
 	}
 	if len(result.OperationTagViolations) > 0 {
-		fmt.Printf("Missing operation tags for %d operation(s):\n", len(result.OperationTagViolations))
-		fmt.Println()
 		for _, item := range result.OperationTagViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing operation tag\t%s\n", color.YellowString("warning\t"), item)
 		}
-		fmt.Println()
 	}
 	if len(result.OperationIdViolations) > 0 {
-		fmt.Printf("Missing operation ids for %d operation(s):\n", len(result.OperationIdViolations))
-		fmt.Println()
 		for _, item := range result.OperationIdViolations {
-			fmt.Println("-", item)
+			fmt.Fprintf(W, "%sMissing operation id\t%s\n", color.YellowString("warning\t"), item)
 		}
-		fmt.Println()
 	}
+	
 }
 
 func hasWarnings(result *validate.CheckResult) bool {
-	return len(result.OperationDescriptionViolations) > 0
+	return len(result.OperationDescriptionViolations) > 0 ||
+	len(result.OperationTagViolations) > 0 || 
+	len(result.OperationIdViolations) > 0 
 }
