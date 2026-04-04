@@ -7,6 +7,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
+
 type CheckResult struct {
 	OperationSummaryViolations           []string
 	OperationDescriptionViolations       []string
@@ -31,10 +32,40 @@ func (result *CheckResult) HasErrors() bool {
 		len(result.ServerPlaceholderViolations) > 0
 }
 
+func CountErrors(result *CheckResult) int {
+
+	errorCount := len(result.OperationSummaryViolations) +
+	len(result.SuccessResponseViolations) +
+	len(result.ErrorResponseViolations) +
+	len(result.SuccessResponseDescriptionViolations) +
+	len(result.ErrorResponseDescriptionViolations) + 
+	len(result.ServerPlaceholderViolations) + 
+	len(result.ParamDescriptionViolations)
+
+	if result.MissingServers == true {
+		errorCount++
+	}	
+	
+	return errorCount
+}
+
 func (result *CheckResult) HasWarnings() bool {
 	return len(result.OperationDescriptionViolations) > 0 ||
 		len(result.OperationIdViolations) > 0 ||
 		len(result.OperationTagViolations) > 0 
+}
+
+func CountWarnings(result *CheckResult) int {
+
+	warningCount := len(result.OperationDescriptionViolations) + 
+		len(result.OperationIdViolations) +
+		len(result.OperationTagViolations)
+
+	if result.MissingServers == true {
+		warningCount++
+	}	
+	
+	return warningCount
 }
 
 func CheckServer(server *openapi3.Server, result *CheckResult, blockList []string) {
