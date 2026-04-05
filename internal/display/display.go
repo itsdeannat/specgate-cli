@@ -5,6 +5,7 @@ import (
 	"os"
 	"specgate/internal/validate"
 	"text/tabwriter"
+
 	"github.com/fatih/color"
 )
 
@@ -27,7 +28,7 @@ func PrintResults(file string, result *validate.CheckResult, strict bool) {
 	if !strict && result.HasWarnings() {
 		fmt.Println()
 		fmt.Println("Run with --strict to treat warnings as errors.")
-	} 
+	}
 
 	if !result.HasErrors() && !result.HasWarnings() {
 		fmt.Println("✅ Spec is ready.")
@@ -133,10 +134,23 @@ func PrintSummary(file string, result *validate.CheckResult, strict bool) {
 	var WarningCount int = validate.CountWarnings(result)
 
 	if strict && result.HasWarnings() {
-		fmt.Printf("%s - %d errors\n", file, ErrorCount+WarningCount)
+		totalCount := ErrorCount + WarningCount
+		errorLabel := "errors"
+		if totalCount == 1 {
+			errorLabel = "error"
+		}
+		fmt.Printf("%s - %d %s\n", file, totalCount, errorLabel)
 		fmt.Println()
 	} else {
-		fmt.Printf("%s - %d errors, %d warnings\n", file, ErrorCount, WarningCount)
+		errorLabel := "errors"
+		if ErrorCount == 1 {
+			errorLabel = "error"
+		}
+		warningLabel := "warnings"
+		if WarningCount == 1 {
+			warningLabel = "warning"
+		}
+		fmt.Printf("%s - %d %s, %d %s\n", file, ErrorCount, errorLabel, WarningCount, warningLabel)
 		fmt.Println()
 	}
 }
