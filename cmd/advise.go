@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/itsdeannat/specgate-cli/internal/llm"
-	"github.com/itsdeannat/specgate-cli/internal/report"
-	"github.com/itsdeannat/specgate-cli/internal/validate"
+	"github.com/itsdeannat/specgate/internal/llm"
+	"github.com/itsdeannat/specgate/internal/report"
+	"github.com/itsdeannat/specgate/internal/validate"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"

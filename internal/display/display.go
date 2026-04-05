@@ -5,7 +5,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/itsdeannat/specgate-cli/internal/validate"
+	"github.com/itsdeannat/specgate/internal/validate"
 
 	"github.com/fatih/color"
 )
