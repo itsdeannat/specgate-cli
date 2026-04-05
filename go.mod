@@ -1,4 +1,4 @@
-module specgate
+module github.com/itsdeannat/specgate-cli
 
 go 1.25.0
 
