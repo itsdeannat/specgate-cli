@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.0.0](https://github.com/itsdeannat/specgate/compare/v0.4.2...v1.0.0) (2026-04-05)
 
+* Initial stable release of SpecGate
+
 ### [0.4.2](https://github.com/itsdeannat/specgate/compare/v0.4.1...v0.4.2) (2026-04-05)
 
 
