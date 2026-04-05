@@ -6,7 +6,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"specgate/internal/settings"
+
+	"github.com/itsdeannat/specgate-cli/internal/settings"
 
 	"github.com/spf13/cobra"
 )

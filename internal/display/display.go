@@ -3,8 +3,9 @@ package display
 import (
 	"fmt"
 	"os"
-	"specgate/internal/validate"
 	"text/tabwriter"
+
+	"github.com/itsdeannat/specgate-cli/internal/validate"
 
 	"github.com/fatih/color"
 )
