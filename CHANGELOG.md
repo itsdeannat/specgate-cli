@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/itsdeannat/specgate/compare/v0.4.1...v0.4.2) (2026-04-05)
+
+
+### Changed
+
+* change specgate-cli to specgate ([a3c6bd7](https://github.com/itsdeannat/specgate/commit/a3c6bd787bbcff39e322764824858ce47e39fdd6))
+
 ### [0.4.1](https://github.com/itsdeannat/specgate-cli/compare/v0.4.0...v0.4.1) (2026-04-05)
 
 
